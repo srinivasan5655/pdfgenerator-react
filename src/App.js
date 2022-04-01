@@ -1,12 +1,10 @@
 import "./App.css";
 import React, { useCallback } from "react";
-import { useDropzone } from "react-dropzone";
 import Dropzone from "react-dropzone";
 import { PDFDocument } from "pdf-lib";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { data } from "./data";
-import image from "./";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 let headerfooterDoc = {
