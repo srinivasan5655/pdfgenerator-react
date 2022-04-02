@@ -5,16 +5,17 @@ import { PDFDocument } from "pdf-lib";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { data } from "./data";
+import { headerImage } from "./header.js";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 let headerfooterDoc = {
-  // header: {
-  //   margin: [0, 0, 0, 0],
-  //   alignment: "center",
-  //   image: "",
-  //   height: 100,
-  //   width: 600,
-  // },
+  header: {
+    margin: [0, 0, 0, 0],
+    alignment: "center",
+    image: headerImage,
+    height: 100,
+    width: 600,
+  },
   content: [],
   styles: {
     header: {
