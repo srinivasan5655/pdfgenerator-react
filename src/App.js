@@ -287,8 +287,8 @@ async function merge() {
   copiedPagesA.forEach((page) => mergedPdf.addPage(page));
   const copiedPagesB = await mergedPdf.copyPages(pdf2, pdf2.getPageIndices());
   copiedPagesB.forEach((page) => mergedPdf.addPage(page));
-  const mergedPdfFile = await mergedPdf.save();
-  console.log(mergedPdfFile, "pdf ");
+  const mergedPdfFile = await (await mergedPdf.save()).buffer;
+  console.log(mergedPdfFile);
   download(
     mergedPdfFile,
     "pdf-lib_page_copying_example.pdf",
