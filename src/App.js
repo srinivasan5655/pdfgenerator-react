@@ -6,6 +6,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { data } from "./data";
 import { headerImage } from "./header.js";
+import modifyPdf from "./modify";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 let headerfooterDoc = {
@@ -217,11 +218,11 @@ headerfooterDoc["content"].push(
 // getting generated resume as arrayBuffer
 let buffer1;
 let buffer2;
+let modified;
 const pdfDocGenerator = pdfMake.createPdf(headerfooterDoc);
 console.log("start");
 pdfDocGenerator.getBuffer((buffer) => {
   buffer1 = buffer.buffer;
-  console.log(buffer1, "buf1");
 });
 
 // dropzone
@@ -238,7 +239,9 @@ function MyDropzone() {
         // Do whatever you want with the file contents
 
         buffer2 = reader.result;
-        console.log(buffer2);
+        modifyPdf(buffer2).then((res) => {
+          modified = res;
+        });
       };
       reader.readAsArrayBuffer(file);
     });
@@ -281,14 +284,13 @@ function download(file, filename, type) {
 }
 async function merge() {
   const pdf1 = await PDFDocument.load(buffer1);
-  const pdf2 = await PDFDocument.load(buffer2);
+  const pdf2 = await PDFDocument.load(modified);
   const mergedPdf = await PDFDocument.create();
   const copiedPagesA = await mergedPdf.copyPages(pdf1, pdf1.getPageIndices());
   copiedPagesA.forEach((page) => mergedPdf.addPage(page));
   const copiedPagesB = await mergedPdf.copyPages(pdf2, pdf2.getPageIndices());
   copiedPagesB.forEach((page) => mergedPdf.addPage(page));
   const mergedPdfFile = await (await mergedPdf.save()).buffer;
-  console.log(mergedPdfFile);
   download(
     mergedPdfFile,
     "pdf-lib_page_copying_example.pdf",
