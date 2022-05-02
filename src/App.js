@@ -219,11 +219,13 @@ headerfooterDoc["content"].push(
 let buffer1;
 let buffer2;
 let modified;
-const pdfDocGenerator = pdfMake.createPdf(headerfooterDoc);
-console.log("start");
-pdfDocGenerator.getBuffer((buffer) => {
-  buffer1 = buffer.buffer;
-});
+// const pdfDocGenerator = pdfMake.createPdf(headerfooterDoc);
+// pdfDocGenerator.getBuffer((buffer) => {
+//   buffer1 = buffer.buffer;
+//   console.log("in");
+// });
+
+// console.log("out");
 
 // dropzone
 function MyDropzone() {
@@ -255,7 +257,6 @@ function MyDropzone() {
           style={{
             height: "100px",
             width: "200px",
-
             marginLeft: "45% ",
           }}
         >
@@ -283,19 +284,25 @@ function download(file, filename, type) {
   link.href = URL.createObjectURL(new Blob(binaryData, { type: type }));
 }
 async function merge() {
-  const pdf1 = await PDFDocument.load(buffer1);
-  const pdf2 = await PDFDocument.load(modified);
-  const mergedPdf = await PDFDocument.create();
-  const copiedPagesA = await mergedPdf.copyPages(pdf1, pdf1.getPageIndices());
-  copiedPagesA.forEach((page) => mergedPdf.addPage(page));
-  const copiedPagesB = await mergedPdf.copyPages(pdf2, pdf2.getPageIndices());
-  copiedPagesB.forEach((page) => mergedPdf.addPage(page));
-  const mergedPdfFile = await (await mergedPdf.save()).buffer;
-  download(
-    mergedPdfFile,
-    "pdf-lib_page_copying_example.pdf",
-    "application/pdf"
-  );
+  const pdfDocGenerator = pdfMake.createPdf(headerfooterDoc);
+  console.log(pdfDocGenerator);
+  pdfDocGenerator.getBuffer(async (buffer) => {
+    buffer1 = buffer.buffer;
+    const pdf1 = await PDFDocument.load(buffer1);
+    const pdf2 = await PDFDocument.load(modified);
+    console.log(pdf2);
+    const mergedPdf = await PDFDocument.create();
+    const copiedPagesA = await mergedPdf.copyPages(pdf1, pdf1.getPageIndices());
+    copiedPagesA.forEach((page) => mergedPdf.addPage(page));
+    const copiedPagesB = await mergedPdf.copyPages(pdf2, pdf2.getPageIndices());
+    copiedPagesB.forEach((page) => mergedPdf.addPage(page));
+    const mergedPdfFile = await (await mergedPdf.save()).buffer;
+    download(
+      mergedPdfFile,
+      "pdf-lib_page_copying_example.pdf",
+      "application/pdf"
+    );
+  });
 }
 
 function App() {
